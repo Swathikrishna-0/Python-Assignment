@@ -122,7 +122,30 @@ class RegressionModelAnalyzer:
         print("\nChosen Functions:")
         print(chosen_functions_df)
 
-    
+    def visualize_data(self):
+        # Visualize test data mapping and deviations using Bokeh
+        p = bp.figure(
+            title="Test Data Mapping and Deviations", x_axis_label="X", y_axis_label="Y"
+        )
+        colors = ["red", "green", "blue", "orange"]
+        for i, func_index in enumerate(self.functions_choosen_indices):
+            parameters = self.functions_choosen[func_index]
+            func = lambda x: parameters[0] * np.sin(parameters[1] * x + parameters[2])
+            p.line(
+                self.ideal_data_functions["x"],
+                func(self.ideal_data_functions["x"]),
+                line_width=2,
+                color=colors[i],
+                legend_label=f"Ideal Func {func_index+1}",
+            )
+        p.scatter(
+            self.mapped_data_table["X (test func)"],
+            self.mapped_data_table["Y (test func)"],
+            size=8,
+            color="black",
+            legend_label="Test Data",
+        )
+        bp.show(p)
 
     def _reconstruct_function(self, parameters, x):
         # Reconstruct function using parameters
